@@ -1,0 +1,13 @@
+{
+  "RULES": {
+    "RULE_1": {
+      "CONDITIONS":[
+        ["from_email","CONTAINS","jobs@techgig.com"],
+        ["to_email","CONTAINS","joodithl@gmail.com"],
+        ["action_date","EQ","0|D"]
+      ],
+      "PREDICATE": "ALL",
+      "ACTIONS":["MOVE_TO_INBOX","MARK_AS_READ"]
+    }
+  }
+}
