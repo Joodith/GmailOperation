@@ -2,7 +2,7 @@
   "RULES": {
     "RULE_1": {
       "CONDITIONS":[
-        ["from_email","CONTAINS","jobs@techgig.com"],
+        ["from_email","CONTAINS","jobalerts-noreply@linkedin.com"],
         ["to_email","CONTAINS","joodithl@gmail.com"],
         ["action_date","EQ","0|D"]
       ],

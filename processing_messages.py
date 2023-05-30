@@ -5,7 +5,7 @@ import re
 from googleapiclient.discovery import build
 from authorize import gmail_authorisation
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timezone
 import requests
 import json
 
@@ -42,12 +42,23 @@ class GmailMessages:
             to_value = next((header['value'] for header in headers if header['name'] == 'To'), '')
             date_value = next((header['value'] for header in headers if header['name'] == 'Date'), '')
             subject = next((header['value'] for header in headers if header['name'] == 'Subject'), '')
+            datetime_obj = None
+            date_string = ""
+            date_value = date_value.split('(')[0].strip()
+            l = date_value.split(" ")
+            l.pop()
+            date_value = " ".join(l)
 
-            datetime_obj = datetime.strptime(date_value, "%a, %d %b %Y %H:%M:%S %z")
+            # Handling different date formats
+            if len(l) == 5:
+                datetime_obj = datetime.strptime(date_value, "%a, %d %b %Y %H:%M:%S")
+            elif len(l) == 4:
+                datetime_obj = datetime.strptime(date_value, "%d %b %Y %H:%M:%S")
 
             # Extract the date component
-            date_obj = datetime_obj.date()
-            date_string = date_obj.strftime("%Y-%m-%d")
+            if datetime_obj:
+                date_obj = datetime_obj.date()
+                date_string = date_obj.strftime("%Y-%m-%d")
 
             # Extract the emails alone from the fields "from" and "to"
             if from_value != "":
@@ -67,12 +78,10 @@ class GmailMessages:
             else:
                 to_address = ""
 
-
             # Iterate over attachments, if any
             if attachments:
                 for attachment in attachments:
                     attachment_name = attachment['filename']
-
 
             # Decode and parse the message body
             if "data" in mail_payload['body']:
@@ -97,7 +106,7 @@ class GmailMessages:
                                ))
 
         message_table.insert_rows(COLUMNS, DATA_TUPLE)
-        msg=f"Inserted {len(DATA_TUPLE)} rows!"
+        msg = f"Inserted {len(DATA_TUPLE)} rows!"
         print(msg)
 
     def mark_as_read(self, message_id):
