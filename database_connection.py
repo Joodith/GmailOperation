@@ -75,6 +75,8 @@ class DatabaseTables:
         """
         if cond == "EQ":
             return f"{str(field)} = {target}"
+        if cond == "NEQ":
+            return f"{str(field)} != {target}"
         if cond == "LT":
             return f"{str(field)} < {target}"
         if cond == "LTE":

@@ -1,13 +1,85 @@
 {
   "RULES": {
     "RULE_1": {
-      "CONDITIONS":[
-        ["from_email","CONTAINS","jobalerts-noreply@linkedin.com"],
-        ["to_email","CONTAINS","joodithl@gmail.com"],
-        ["action_date","EQ","0|D"]
+      "CONDITIONS": [
+        [
+          "from_email",
+          "CONTAINS",
+          "jobalerts-noreply@linkedin.com"
+        ],
+        [
+          "to_email",
+          "CONTAINS",
+          "joodithl@gmail.com"
+        ],
+        [
+          "action_date",
+          "EQ",
+          "0|D"
+        ]
       ],
       "PREDICATE": "ALL",
-      "ACTIONS":["MOVE_TO_INBOX","MARK_AS_READ"]
+      "ACTIONS": [
+        "MOVE_TO_INBOX",
+        "MARK_AS_READ"
+      ]
+    },
+    "RULE_2": {
+      "CONDITIONS": [
+        [
+          "messageBody",
+          "CONTAINS",
+          "python"
+        ],
+        [
+          "action_date",
+          "LT",
+          "1|D"
+        ]
+      ],
+      "PREDICATE": "ANY",
+      "ACTIONS": [
+        "MOVE_TO_INBOX",
+        "MARK_AS_IMPORTANT"
+      ]
+    },
+    "RULE_3": {
+      "CONDITIONS": [
+        [
+          "subject",
+          "NOT CONTAINS",
+          "KCT_ENTRANCE_SYSTEM"
+        ],
+        [
+          "from_email",
+          "NOT CONTAINS",
+          "noreply@md.getsentry.com"
+        ],
+        [
+          "action_date",
+          "EQ",
+          "1|D"
+        ]
+      ],
+      "PREDICATE": "ALL",
+      "ACTIONS": [
+        "MOVE_TO_SPAM",
+        "MARK_AS_UNREAD"
+      ]
+    },
+    "RULE_4": {
+      "CONDITIONS": [
+        [
+          "subject",
+          "CONTAINS",
+          "Hackathon"
+        ]
+      ],
+      "PREDICATE": "ALL",
+      "ACTIONS": [
+        "MOVE_TO_UPDATES",
+        "MARK_AS_IMPORTANT"
+      ]
     }
   }
 }

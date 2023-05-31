@@ -109,23 +109,26 @@ class GmailMessages:
         msg = f"Inserted {len(DATA_TUPLE)} rows!"
         print(msg)
 
-    def mark_as_read(self, message_id):
+    def mark_as_given(self, message_id,labels_to_remove=None,labels_to_add=None):
         # Marking the message of the given id as read
         url = f"https://www.googleapis.com/gmail/v1/users/me/messages/{message_id}/modify"
         headers = {
             "Authorization": f"Bearer {self.access_token}",
             "Content-Type": "application/json"
         }
-        data = {
-            "removeLabelIds": ["UNREAD"]
-        }
+        data=dict()
+        if labels_to_remove:
+            data["removeLabelIds"]=labels_to_remove
+        if labels_to_add:
+            data["addLabelIds"]=labels_to_add
+
         response = requests.post(url, headers=headers, data=json.dumps(data))
         if response.status_code == 200:
-            print(f"Message {message_id} marked as read.")
+            print(f"Message {message_id} marked as specified.")
         else:
-            print(f"Failed to mark message {message_id} as read. Error: {response.text}")
+            print(f"Failed to mark message {message_id} . Error: {response.text}")
 
-    def move_to_inbox(self, message_id):
+    def move_message(self, message_id,label_id):
         # Moving the message of the given id to inbox
         url = f"https://www.googleapis.com/gmail/v1/users/me/messages/{message_id}/modify"
         headers = {
@@ -133,10 +136,11 @@ class GmailMessages:
             "Content-Type": "application/json"
         }
         data = {
-            "addLabelIds": ["INBOX"]
+            "addLabelIds": [label_id]
         }
         response = requests.post(url, headers=headers, data=json.dumps(data))
         if response.status_code == 200:
-            print(f"Message {message_id} moved to inbox.")
+            print(f"Message {message_id} moved to {label_id}.")
         else:
-            print(f"Failed to move message {message_id} to inbox. Error: {response.text}")
+            print(f"Failed to move message {message_id} to {label_id}. Error: {response.text}")
+

@@ -1,6 +1,17 @@
 from database_connection import DatabaseTables
 from config import DATABASE
 
+LABEL_IDS = {
+    "MOVE_TO_INBOX": "INBOX",
+    "MOVE_TO_SPAM": "SPAM",
+    "MOVE_TO_TRASH": "TRASH",
+    "MOVE_TO_PROMOTIONS": "CATEGORY_PROMOTIONS",
+    "MOVE_TO_FORUMS": "CATEGORY_FORUMS",
+    "MOVE_TO_SOCIAL": "CATEGORY_SOCIAL",
+    "MOVE_TO_UPDATES": "CATEGORY_UPDATES",
+
+}
+
 
 def create_necessary_tables():
     """
@@ -21,11 +32,18 @@ def map_actions(gmail, action, id):
     :param id: Message id
     :return: None
     """
-    if action == "MOVE_TO_INBOX":
-        gmail.move_to_inbox(id)
+    if "MOVE_TO" in action:
+        if action in LABEL_IDS:
+            gmail.move_message(id, LABEL_IDS[action])
+        else:
+            print("The action specified is not found")
         return
     if action == "MARK_AS_READ":
-        gmail.mark_as_read(id)
+        gmail.mark_as_given(id, ["UNREAD"])
         return
-
-
+    if action == "MARK_AS_UNREAD":
+        gmail.mark_as_given(id, None, ["UNREAD"])
+        return
+    if action == "MARK_AS_IMPORTANT":
+        gmail.mark_as_given(id, None, ["IMPORTANT"])
+        return
